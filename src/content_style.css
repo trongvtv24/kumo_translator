@@ -1,0 +1,77 @@
+/* Styling cho tính năng Lớp Phủ (Overlay Tooltip) của KumoTranslate */
+
+/* Thẻ bọc ngoài chữ tiếng Nhật */
+.kumo-overlay-wrapper {
+    position: relative;
+    border-bottom: 2px dashed rgba(59, 130, 246, 0.6);
+    /* Nét đứt xanh - dấu hiệu nhận biết */
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.kumo-overlay-wrapper:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    /* Highlight nhẹ nền */
+}
+
+/* Tooltip nổi lên mang nghĩa tiếng Việt */
+.kumo-overlay-wrapper::after {
+    content: attr(data-kumo-translated);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: rgba(20, 20, 30, 0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    /* Không xuống dòng nếu text ngắn */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* Animation giật mượt */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    z-index: 2147483647;
+    /* Hiển thị đè lên tất cả z-index của trang */
+    pointer-events: none;
+    /* Tránh cản trở thao tác chuột */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Tam giác nhỏ trỏ xuống */
+.kumo-overlay-wrapper::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(20, 20, 30, 0.95) transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 2147483647;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+/* Trạng thái Hover: Tooltip trượt lên và hiện rõ */
+.kumo-overlay-wrapper:hover::after,
+.kumo-overlay-wrapper:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.kumo-overlay-wrapper:hover::after {
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.kumo-overlay-wrapper:hover::before {
+    transform: translateX(-50%) translateY(-4px);
+    /* Khoảng cách mũi tên */
+}

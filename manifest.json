@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "KumoTranslate",
+  "version": "1.0.0",
+  "description": "Smart DOM Japanese Translator with Layout Preservation",
+  "author": "Antigravity Dev",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Kumo Translate"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content_script.js"
+      ],
+      "css": [
+        "src/content_style.css"
+      ],
+      "run_at": "document_end"
+    }
+  ]
+}

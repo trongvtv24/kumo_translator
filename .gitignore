@@ -1,0 +1,6 @@
+.brain/session.json
+.brain/*.log
+.DS_Store
+node_modules/
+.env
+*.zip

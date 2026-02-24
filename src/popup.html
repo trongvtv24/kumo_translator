@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KumoTranslate Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="extension-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-area">
+                <div class="logo-icon">雲</div>
+                <h1 class="logo-text">Kumo Translate</h1>
+            </div>
+            
+            <label class="toggle">
+                <input type="checkbox" id="main-power" checked>
+                <div class="slider"></div>
+            </label>
+        </header>
+
+        <!-- Main Status -->
+        <section class="status-card active-mode">
+            <div class="status-indicator">
+                <span class="dot pulse"></span>
+                <span class="status-text" id="status-label">Đang dịch toàn trang</span>
+            </div>
+            
+            <div class="language-paths">
+                <div class="lang-box">
+                    <span class="lang-code">JP</span>
+                    <span class="lang-name">Tiếng Nhật</span>
+                </div>
+                <!-- Swap icon -->
+                <svg class="swap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+                <div class="lang-box target-lang" id="target-selector">
+                    <span class="lang-code">VI</span>
+                    <span class="lang-name">Tiếng Việt</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Features Selection -->
+        <section class="features">
+            <h2 class="section-title">CHẾ ĐỘ DỊCH THUẬT</h2>
+            
+            <label class="feature-item">
+                <div class="feature-info">
+                    <span class="feature-name">Dịch thay thế văn bản</span>
+                    <span class="feature-desc">Đổi chữ tiếng Nhật thành Tiếng Việt trực tiếp trên Layout</span>
+                </div>
+                <input type="radio" name="translation_mode" value="replace" checked>
+                <div class="radio-custom"></div>
+            </label>
+            
+            <label class="feature-item">
+                <div class="feature-info">
+                    <span class="feature-name">Hiển thị lớp phủ (Overlay)</span>
+                    <span class="feature-desc">Di chuột vào văn bản để xem bản dịch dạng Popup nhỏ</span>
+                </div>
+                <input type="radio" name="translation_mode" value="overlay">
+                <div class="radio-custom"></div>
+            </label>
+
+            <label class="feature-item disabled">
+                <div class="feature-info">
+                    <span class="feature-name">Tự động dịch trang này</span>
+                    <span class="feature-desc">Luôn dịch tự động khi vào trang drive.google.com</span>
+                </div>
+                <div class="toggle-small">
+                    <input type="checkbox" checked>
+                    <div class="slider-small"></div>
+                </div>
+            </label>
+        </section>
+
+        <!-- Tooltip/Footer -->
+        <footer class="footer">
+            <button class="btn-primary" id="translate-now-btn">Quét lại trang</button>
+            <p class="credit">Powered bằng Google AI</p>
+        </footer>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

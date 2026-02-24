@@ -1,0 +1,48 @@
+{
+    "meta": {
+        "schema_version": "1.1.0",
+        "awf_version": "3.3.0"
+    },
+    "project": {
+        "name": "KumoTranslate",
+        "type": "Chrome Extension (Manifest V3)",
+        "status": "MVP Completed"
+    },
+    "tech_stack": {
+        "frontend": {
+            "html": "HTML5",
+            "css": "Vanilla CSS (Glassmorphism)",
+            "js": "Vanilla JS"
+        },
+        "backend": {
+            "api": "Google Translate Free API (client=gtx)"
+        },
+        "platform": {
+            "name": "Chrome Extensions API",
+            "version": "v3"
+        }
+    },
+    "features": [
+        {
+            "name": "Real-time DOM Parser",
+            "desc": "Tự động phân tích và dịch TextNode có tiếng Nhật (bỏ qua script/style) theo thời gian thực mà không làm vỡ giao diện mạng"
+        },
+        {
+            "name": "Overlay Mode (Lớp Phủ Tooltip)",
+            "desc": "Giữ nguyên chữ gốc tiếng Nhật trên mặt web, khi rê chuột vào sẽ xổ ra bóng kính (tooltip) tiếng Việt qua thuộc tính data-kumo-translated"
+        },
+        {
+            "name": "Replace Mode (Ghi đè)",
+            "desc": "Xóa ký tự tiếng Nhật và thay thế bằng tiếng Việt thẳng vào Document Object Model (DOM)."
+        },
+        {
+            "name": "Smart Caching",
+            "desc": "Lưu đệm từ vựng sau dịch vào Local Dictionary để giảm thiểu requests đẩy đi làm nghẽn API Google."
+        },
+        {
+            "name": "SPA Observer",
+            "desc": "MutationObserver chạy ngầm liên tục giám sát AJAX và AjaxLoad như trên Google Drive để dịch lập tức đoạn text mới."
+        }
+    ],
+    "architecture_notes": "Extension gồm 3 cấu phần chính: 1) popup.html/js (UI điều khiển State lưu vào chrome.storage). 2) content_script.js (Con bot dò quét chữ và bọc thẻ Nhựa phục vụ Tooltip). 3) background.js (Web Worker kết nối internet chạy nền bọc try/catch chống sập mạng)"
+}
