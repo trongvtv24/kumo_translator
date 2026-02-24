@@ -1,41 +1,22 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 HANDOVER DOCUMENT (LƯU TRỮ VĨNH VIỄN)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🧠 KumoTranslate: Infinite Memory Keeper
 
-📍 Dự Án: KumoTranslate (Chrome Extension)
-🔢 Trạng thái: ĐÃ HOÀN THIỆN MVP (Version 1.0.0)
+## 📍 Trạng thái hiện tại
+Dự án đã hoàn thành MVP và vừa trải qua đợt nâng cấp UX/Logic quan trọng. Toàn bộ code đã được PUSH lên GitHub.
 
-✅ ĐÃ XONG (6/6 PHASES):
-   - Phase 01: Setup Environment & Manifest V3
-   - Phase 02: Develop Popup UI (Settings Panel)
-   - Phase 03: Core Translator Engine (DOM Parser)
-   - Phase 04: Background API Handler
-   - Phase 05: Integration & Overlay Mode
-   - Phase 06: Testing on SPA (Google Drive, v.v)
+## ✅ Những gì đã làm trong session này:
+- **Nâng cấp UX:** Biến ô chọn ngôn ngữ thành một nút bấm thực thụ với hiệu ứng hover/active cực nhạy.
+- **Sửa lỗi Logic Cache:** Giải quyết triệt để việc "nhớ nhầm" bản dịch Tiếng Việt khi chuyển sang dịch Tiếng Anh.
+- **Tính năng Scan Tức thì:** Sử dụng `OriginalTextMap` để lưu DNA chữ Nhật gốc, cho phép đổi ngôn ngữ và dịch lại ngay lập tức mà không cần người dùng phải bấm F5 tải lại trang.
+- **GitHub Sync:** Đã Commit và Push bản build ổn định nhất lên origin main.
 
-⏳ CÒN LẠI (CHO TƯƠNG LAI):
-   - Thay thế Google Translate Free (gtx) bằng API tính phí/xịn hơn (DeepL, Azure) nếu Google chặn IP.
-   - Thêm tính năng "Blacklist" (Danh sách ngoại trừ các web không muốn dịch).
-   - Tối ưu lại Regex tiếng Nhật (nếu cần lọc gắt hơn).
-   - Xử lý mảng trả về của Google API cho các câu quá dài (đôi khi mảng bị cắt nhỏ, hiện tại đã nối bằng vòng lặp).
+## 🔧 Kiến thức kỹ thuật cần nhớ:
+- **OriginalTextMap (WeakMap):** Chìa khóa để quản lý trạng thái văn bản gốc khi bị ghi đè. Đừng bao giờ xóa nó nếu không muốn mất khả năng Rescan.
+- **Communication Flow:** `popup.js` (gửi action: languageChanged) -> `content_script.js` (nhận lệnh -> xóa cache -> hồi phục DOM -> dịch lại).
 
-🔧 QUYẾT ĐỊNH QUAN TRỌNG:
-   - Dùng Google Translate Free API (endpoint `client=gtx`) để không cần xin API Key.
-   - Không đè CSS gốc của Web: Thay vì thay đổi Node, chế độ Overlay chỉ dùng class cấp cao (`.kumo-overlay-wrapper`).
-   - Storage Sync: Dùng `chrome.storage.local` để lưu settings tức thời, khi thay đổi sẽ Message tới Content Script để cập nhật biến `currentMode` hoặc quét lại bằng `forceScan`.
+## 🚀 Bước tiếp theo:
+- Tắt máy nghỉ ngơi. Dự án đang ở trạng thái cực kỳ ổn định.
+- Lần sau quay lại, chỉ cần gõ `/recap` để em đọc lại những dòng này và tiếp tục.
 
-⚠️ LƯU Ý CHO SESSION SAU (NẾU CÓ BUG):
-   - Cờ `isTranslating` trong `src/content_script.js` RẤT QUAN TRỌNG để chặn `MutationObserver` gọi gọi vòng lặp sập RAM, cẩn thận khi chỉnh sửa delay `setTimeout`.
-   - Hàm `containsJapanese` cố tình loại bỏ Text rỗng và Số 123 để giảm Spam WebRequest bắt API Google.
-   - Cẩn thận CSS z-index (`2147483647` ở bóng Tooltip Overlay) được đặt max cấu hình chống chèn khung (Overflow:Hidden) trên các Form Web.
-
-📁 FILES QUAN TRỌNG:
-   - `docs/BRIEF.md` (Scope + Cốt truyện chính của App)
-   - `docs/DESIGN.md` (Luồng Architecture + Case Testing)
-   - `.brain/brain.json` (Knowledge vĩnh viễn)
-   - `.brain/session.json` (Progress task)
-   - `CHANGELOG.md` (Lịch sử sửa code)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Đã lưu! Để tiếp tục với App này: Gõ /recap
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
+*Lưu lúc: 14:45 - 24/02/2026*
+*Bởi: Antigravity Librarian*
