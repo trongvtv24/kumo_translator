@@ -171,9 +171,20 @@ input:checked + .slider::before {
     width: 44%;
     cursor: default;
 }
+.target-lang {
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 .target-lang:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.15);
     cursor: pointer;
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.2);
+}
+.target-lang:active {
+    transform: translateY(0);
 }
 
 .lang-code {

@@ -9,6 +9,9 @@ let isTranslating = false; // Ngăn chặn loop vô hạn của MutationObserver
 // Hệ thống lưu trữ đệm Local (Lịch sử dịch)
 const LocalDict = new Map();
 
+// Hệ thống lưu trữ đoạn TextNode gốc để phục hồi/quét lại khi web đổi ngôn ngữ
+const OriginalTextMap = new WeakMap();
+
 // Hàm nhận diện Kanji / Kata / Hira của tiếng Nhật
 function containsJapanese(str) {
     if (!str || typeof str !== 'string' || str.trim().length === 0) return false;
@@ -18,6 +21,18 @@ function containsJapanese(str) {
 }
 
 // ==== GIAI ĐOẠN 1: QUÉT DOM (DOM WALKER) ====
+// Phục hồi lại các lớp phủ về Text bình thường để có thể quét lại từ đầu
+function revertOverlayNodes() {
+    isTranslating = true;
+    const overlays = document.querySelectorAll('.kumo-overlay-wrapper');
+    overlays.forEach(wrapper => {
+        const textNode = document.createTextNode(wrapper.textContent);
+        wrapper.parentNode.replaceChild(textNode, wrapper);
+    });
+    // Trả luồng về trạng thái thường sau một chút
+    setTimeout(() => { isTranslating = false; }, 10);
+}
+
 // Hàm đệ quy duyệt qua các Node và tìm Text Node chứa chữ Nhật
 function walkDOM(node) {
     // Bỏ qua các thẻ ẩn hoặc script, style, text area (để tránh lỗi edit của người dùng)
@@ -29,13 +44,13 @@ function walkDOM(node) {
 
     // Nếu Node này là 1 khối Text thuần -> Kiểm tra xem có chữ Nhật không
     if (node.nodeType === 3) {
-        // Chỉ lấy các text hiển thị, loại trừ whitespace liên tục
-        const text = node.nodeValue.trim();
+        // Nếu đã từng dịch, ta trích xuất văn bản gốc ra thay vì nodeValue bị ghi đè
+        let textMatch = OriginalTextMap.has(node) ? OriginalTextMap.get(node) : node.nodeValue.trim();
 
         // 🎯 LỖI TIỀM ẨN CẦN CHÚ Ý: Chống thay đổi Text Rỗng
-        if (text.length > 0 && containsJapanese(text)) {
+        if (textMatch.length > 0 && containsJapanese(textMatch)) {
             // Nếu có text và có tiếng Nhật
-            processTextNode(node, text);
+            processTextNode(node, textMatch);
         }
     } else {
         // Đệ quy chui vào các node con
@@ -51,7 +66,20 @@ function walkDOM(node) {
 function processTextNode(textNode, originalText) {
     // 1. Kiểm tra Local Cache trước để chạy nhanh (Tránh Spam API)
     if (LocalDict.has(originalText)) {
-        textNode.nodeValue = LocalDict.get(originalText);
+        isTranslating = true;
+        if (currentMode === 'replace') {
+            textNode.nodeValue = LocalDict.get(originalText);
+            OriginalTextMap.set(textNode, originalText); // Lưu dấu textNode
+        } else if (currentMode === 'overlay') {
+            const wrapper = document.createElement('span');
+            wrapper.className = 'kumo-overlay-wrapper';
+            wrapper.textContent = originalText;
+            wrapper.setAttribute('data-kumo-translated', LocalDict.get(originalText));
+            if (textNode.parentNode) {
+                textNode.parentNode.replaceChild(wrapper, textNode);
+            }
+        }
+        setTimeout(() => { isTranslating = false; }, 10);
         return;
     }
 
@@ -68,6 +96,7 @@ function processTextNode(textNode, originalText) {
             if (currentMode === 'replace') {
                 // Ghi đè chữ (TextNode) vào trong DOM. Không đụng class và style của HTML Element
                 textNode.nodeValue = response.translatedText;
+                OriginalTextMap.set(textNode, originalText); // Lưu dấu vết
             } else if (currentMode === 'overlay') {
                 // Thay vì ghi đè chữ, ta bọc chữ gốc bằng thẻ Nhựa HTML để gắn CSS hiệu ứng (Tooltip)
                 const wrapper = document.createElement('span');
@@ -149,8 +178,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ status: "ok" });
     } else if (request.action === "forceScan") {
         console.log("KumoTranslate: Ép quét lại toàn trang web!");
+        revertOverlayNodes(); // Cởi bỏ lớp phủ cũ để quét lại sạch sẽ
         initTranslation();
         sendResponse({ status: "ok" });
+    } else if (request.action === "languageChanged") {
+        console.log("KumoTranslate: Đổi ngôn ngữ, xóa bộ đệm và quét lại!");
+        LocalDict.clear(); // Xóa bộ nhớ cache
+        chrome.storage.local.get(['isActive', 'translationMode'], (result) => {
+            extensionActive = result.isActive !== undefined ? result.isActive : true;
+            currentMode = result.translationMode || "replace";
+            revertOverlayNodes();
+            initTranslation();
+            sendResponse({ status: "ok" });
+        });
     }
     return true; // Báo hiệu luồng Async
 });

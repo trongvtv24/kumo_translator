@@ -84,8 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
             langName.textContent = 'Tiếng Việt';
         }
 
-        // Lưu lại thay đổi
-        chrome.storage.local.set({ targetLanguage: newLang });
+        // Lưu lại thay đổi và báo luồng content script dọn bộ nhớ
+        chrome.storage.local.set({ targetLanguage: newLang }, () => {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                if (tabs && tabs[0]) {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "languageChanged" });
+                }
+            });
+        });
     });
 
     // 4. CHUYỂN ĐỔI KIỂU DỊCH "GHI ĐÈ" HAY LÀ "LỚP PHỦ"
